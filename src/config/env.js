@@ -1,7 +1,7 @@
 const env = {
-  ENV: process.env.REACT_APP_ENV,
-  API_BASE_URL: process.env.REACT_APP_API_BASE_URL,
-  DEBUG: process.env.REACT_APP_DEBUG === "true",
+  ENV: import.meta.env.MODE,
+  API_BASE_URL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000',
+  DEBUG: import.meta.env.DEV,
 };
 
 export default env;

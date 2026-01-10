@@ -24,3 +24,7 @@ export type { ModalProps } from './modal';
 
 export { default as Input } from './input';
 export type { InputProps } from './input';
+
+export { Alert, AlertTitle, AlertDescription } from './Alert';
+export { ToastProvider, useToast } from './Toast';
+export { AlertDialog } from './AlertDialog';

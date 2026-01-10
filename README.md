@@ -1,552 +1,102 @@
-# GlassBox Frontend
+# GlassBox Agent Frontend
 
-> **Observable AI Agent Interface with Real-Time Trace Visualization**
+A modern, production-ready React application for the GlassBox Agent system. This frontend provides a premium, dark-themed interface for interacting with the Calculator Agent, inspecting execution traces, and managing sessions.
 
-A modern React-based frontend for interacting with GlassBox agents and visualizing execution traces in real-time. Built with transparency and developer experience in mind.
+## 🚀 Features
 
----
+### 💬 Streaming Chat Interface
+- **Real-time Streaming**: Server-Sent Events (SSE) integration for live token streaming.
+- **Thinking Process UI**: Visualizes the agent's reasoning steps (tool calls) in real-time.
+- **Session Management**: Resume past conversations by Session ID.
+- **Markdown Support**: Renders rich text responses.
 
-## 🏗️ Architecture Overview
+### 🔍 Trace Inspection
+- **Detailed Trace History**: View all agent execution runs.
+- **Step-by-Step Breakdown**: Inspect inputs, outputs, latency, and costs for each step.
+- **Replay Capability**: Re-run past traces to verify behavior or debug issues.
+- **Version History**: Track changes and iterations of trace executions.
 
-```mermaid
-graph TB
-    subgraph UserInterface["User Interface"]
-        CHAT[Chat Interface]
-        TRACES[Trace Explorer]
-        MODAL[Trace Inspector]
-    end
-    
-    subgraph StateManagement["State Management"]
-        QUERY[TanStack Query]
-        ZUSTAND[Zustand Store]
-        LOCAL[LocalStorage]
-    end
-    
-    subgraph APILayer["API Layer"]
-        HTTP[HTTP Client<br/>Axios]
-        SSE[SSE Client<br/>EventSource]
-        WS[WebSocket<br/>Future]
-    end
-    
-    subgraph Components["Component Library"]
-        ATOMIC[Atomic Design]
-        ATOMS[Atoms]
-        MOLECULES[Molecules]
-        ORGANISMS[Organisms]
-    end
-    
-    subgraph Backend["Backend API"]
-        STREAM["/chat/stream"]
-        TRACE_API["/traces"]
-        REPLAY["/replay"]
-    end
-    
-    CHAT -->|User Input| SSE
-    TRACES -->|Fetch| HTTP
-    MODAL -->|Detail View| HTTP
-    MODAL -->|Replay| HTTP
-    
-    SSE -->|Real-time| STREAM
-    HTTP -->|REST| TRACE_API
-    HTTP -->|POST| REPLAY
-    
-    QUERY -->|Cache| StateManagement
-    ZUSTAND -->|Global State| StateManagement
-    LOCAL -->|Persist| StateManagement
-    
-    ATOMS --> Components
-    MOLECULES --> Components
-    ORGANISMS --> Components
-    
-    Components --> UserInterface
-    StateManagement --> UserInterface
-    
-    style CHAT fill:#4CAF50,stroke:#333,stroke-width:2px,color:#fff
-    style TRACES fill:#2196F3,stroke:#333,stroke-width:2px,color:#fff
-    style SSE fill:#FF9800,stroke:#333,stroke-width:2px,color:#fff
-```
-
----
-
-## ✨ UserFlow
+### UserFlow/.
 
 ![alt text](image.png)
 
----
+### 🎨 UI/UX
+- **Dark Mode First**: Sleek, high-contrast dark theme designed for developer ergonomics.
+- **Responsive Design**: Fully responsive layout with collapsible sidebar.
+- **Custom Components**: Reusable UI library (Alerts, Modals, Toasts) built with Tailwind CSS.
+- **Toast Notifications**: Global notification system for user feedback.
 
-## ✨ Features
+## 🛠️ Tech Stack
 
-### ✅ Implemented (Production Ready)
+- **Framework**: [React 18](https://reactjs.org/)
+- **Build Tool**: [Vite](https://vitejs.dev/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **Icons**: [Lucide React](https://lucide.dev/)
+- **HTTP Client**: [Axios](https://axios-http.com/)
+- **State Management**: React Context & Hooks
 
-- **💬 Real-Time Chat** - SSE streaming with thinking indicators
-- **🔍 Trace Explorer** - Paginated table with search and filters
-- **📊 Trace Inspector** - Modal with step-by-step waterfall view
-- **🔄 Replay Functionality** - One-click trace replay
-- **🎨 Modern UI** - Glassmorphism, dark mode, smooth animations
-- **📱 Responsive Design** - Mobile-first, works on all devices
-- **⚡ Optimized Performance** - React Query caching, lazy loading
-- **🔐 Authentication** - Guest UUID + API key headers
-- **📈 Live Metrics** - Tokens, cost, latency display
-
-### 🎯 Key User Flows
-
-**1. Chat Mode:**
-```
-User types → SSE connection → "Thinking..." indicator → 
-Steps stream → Final answer → Metrics displayed
-```
-
-**2. Trace Exploration:**
-```
-Click "Traces" → Table loads → Click row → 
-Modal opens → Waterfall view → Per-step metrics
-```
-
-**3. Replay:**
-```
-In modal → Click "Replay" → New trace created → 
-Side-by-side comparison
-```
-
----
-
-## 🗄️ Component Structure
+## 📂 Project Structure
 
 ```
-frontend/
-├── public/
-│   └── index.html
-├── src/
-│   ├── components/
-│   │   ├── atoms/
-│   │   │   ├── Button.tsx
-│   │   │   ├── Input.tsx
-│   │   │   ├── Badge.tsx
-│   │   │   └── Spinner.tsx
-│   │   ├── molecules/
-│   │   │   ├── MessageBubble.tsx
-│   │   │   ├── TraceRow.tsx
-│   │   │   ├── StepCard.tsx
-│   │   │   └── MetricsBar.tsx
-│   │   └── organisms/
-│   │       ├── ChatInterface.tsx
-│   │       ├── TraceTable.tsx
-│   │       ├── TraceModal.tsx
-│   │       └── Navigation.tsx
-│   ├── pages/
-│   │   ├── ChatPage.tsx
-│   │   └── TracesPage.tsx
-│   ├── hooks/
-│   │   ├── useStreamingChat.ts
-│   │   ├── useTraces.ts
-│   │   ├── useTraceDetail.ts
-│   │   └── useReplay.ts
-│   ├── api/
-│   │   ├── client.ts
-│   │   ├── streaming.ts
-│   │   └── traces.ts
-│   ├── store/
-│   │   ├── sessionStore.ts
-│   │   └── authStore.ts
-│   ├── types/
-│   │   ├── trace.ts
-│   │   └── api.ts
-│   ├── utils/
-│   │   ├── formatting.ts
-│   │   └── constants.ts
-│   ├── App.tsx
-│   └── main.tsx
-├── package.json
-├── vite.config.ts
-├── tailwind.config.js
-└── tsconfig.json
+src/
+├── components/         # Shared UI components
+│   └── ui/             # Atomic design elements (Button, Card, Modal, etc.)
+├── context/            # Global state (AuthContext)
+├── features/           # Feature-based modules
+│   ├── auth/           # Authentication logic
+│   ├── chat/           # Chat interface and streaming logic
+│   └── traces/         # Trace inspection and table views
+├── hooks/              # Custom React hooks
+├── layouts/            # Page layouts
+├── pages/              # Route components
+├── services/           # API integration
+│   └── api/            # API client and endpoints
+└── utils/              # Helper functions
 ```
 
----
-
-## 🚀 Quick Start
+## 🚦 Getting Started
 
 ### Prerequisites
-```bash
-# Required
-- Node.js 18+
-- npm or yarn or pnpm
-
-# Backend must be running
-- Backend API at http://localhost:8000
-```
+- Node.js (v18 or higher)
+- npm or yarn
 
 ### Installation
 
-```bash
-# 1. Navigate to frontend
-cd frontend
+1.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
 
-# 2. Install dependencies
-npm install
+2.  **Configure Environment:**
+    Create a `.env` file in the root directory (or use `.env.development`):
+    ```env
+    VITE_API_URL=http://localhost:8000/api/v1
+    ```
 
-# 3. Configure environment
-cp .env.example .env
-# Edit .env with backend URL and API key
+3.  **Run Development Server:**
+    ```bash
+    npm run dev
+    ```
+    The app will be available at `http://localhost:5173`.
 
-# 4. Start dev server
-npm run dev
-```
-
-Frontend runs at: `http://localhost:5173`
-
----
-
-## 🔧 Configuration
-
-### Environment Variables
+### Building for Production
 
 ```bash
-# Backend API
-VITE_API_URL=http://localhost:8000
-VITE_API_KEY=your_backend_api_key
-
-# Feature Flags
-VITE_ENABLE_REPLAY=true
-VITE_ENABLE_ANALYTICS=false
-
-# Guest User
-VITE_CLIENT_UUID=auto_generated  # Auto-created if not set
+npm run build
 ```
+The build artifacts will be stored in the `dist/` directory.
 
-### API Client Setup
+## 🧪 Development
 
-```typescript
-// src/api/client.ts
-import axios from 'axios';
+- **Linting**: `npm run lint`
+- **Preview Build**: `npm run preview`
 
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
-  headers: {
-    'X-API-Key': import.meta.env.VITE_API_KEY,
-    'Authorization': `Bearer ${getClientUUID()}`,
-  },
-});
-```
+## 🔐 Authentication
 
----
-
-## 🎨 Design System
-
-### Colors
-
-```css
-/* Primary Palette */
---primary: #4CAF50;
---secondary: #2196F3;
---accent: #FF9800;
-
-/* Neutrals */
---bg-dark: #0a0a0a;
---bg-blur: rgba(255, 255, 255, 0.05);
---text-primary: #ffffff;
---text-secondary: #a0a0a0;
-
-/* Status Colors */
---success: #4CAF50;
---error: #f44336;
---warning: #FFC107;
-```
-
-### Typography
-
-```css
-/* Font Stack */
-font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-
-/* Scale */
---text-xs: 0.75rem;   /* 12px */
---text-sm: 0.875rem;  /* 14px */
---text-base: 1rem;    /* 16px */
---text-lg: 1.125rem;  /* 18px */
---text-xl: 1.25rem;   /* 20px */
-```
-
-### Glassmorphism
-
-```css
-.glass {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-}
-```
-
----
-
-## 📡 API Integration
-
-### Streaming Chat
-
-```typescript
-const useStreamingChat = () => {
-  const [messages, setMessages] = useState([]);
-  const [isStreaming, setIsStreaming] = useState(false);
-  
-  const sendMessage = async (text: string) => {
-    setIsStreaming(true);
-    const eventSource = new EventSource(
-      `${API_URL}/chat/stream?message=${encodeURIComponent(text)}`
-    );
-    
-    eventSource.addEventListener('thinking', (e) => {
-      // Show thinking indicator
-    });
-    
-    eventSource.addEventListener('tool_call', (e) => {
-      // Show tool execution
-    });
-    
-    eventSource.addEventListener('response', (e) => {
-      // Display final answer
-      setIsStreaming(false);
-    });
-  };
-};
-```
-
-### Trace Fetching
-
-```typescript
-const { data, isLoading } = useQuery({
-  queryKey: ['traces', { page, limit }],
-  queryFn: () => api.get('/api/v1/traces', {
-    params: { offset: page * limit, limit }
-  }),
-  staleTime: 30000, // 30s cache
-});
-```
-
-### Replay
-
-```typescript
-const { mutate: replay } = useMutation({
-  mutationFn: (traceId: string) => 
-    api.post(`/api/v1/traces/${traceId}/replay`),
-  onSuccess: (data) => {
-    // Show new trace alongside original
-    queryClient.invalidateQueries(['traces']);
-  },
-});
-```
-
----
-
-## 🧪 Testing
-
-### Unit Tests
-```bash
-npm run test
-npm run test:watch
-npm run test:coverage
-```
-
-### E2E Tests
-```bash
-npm run test:e2e
-```
-
-### Test Coverage Goals
-- Components: 80%+
-- Hooks: 90%+
-- Utils: 95%+
-
----
-
-## 📦 Build & Deploy
-
-### Development
-```bash
-npm run dev  # Hot reload at localhost:5173
-```
-
-### Production Build
-```bash
-npm run build       # Creates dist/
-npm run preview     # Preview production build
-```
-
-### Docker
-```bash
-docker build -t glassbox-frontend .
-docker run -p 80:80 glassbox-frontend
-```
-
-### Deployment Checklist
-- [ ] Set production API_URL
-- [ ] Enable analytics
-- [ ] Configure CDN (CloudFlare)
-- [ ] Enable caching headers
-- [ ] Set up error tracking (Sentry)
-- [ ] Configure CSP headers
-- [ ] Optimize bundle size (<500KB)
-
----
-
-## ⚡ Performance
-
-### Optimization Strategies
-
-**1. Code Splitting:**
-```typescript
-const TraceModal = lazy(() => import('./components/TraceModal'));
-```
-
-**2. Query Caching:**
-```typescript
-useQuery({
-  queryKey: ['trace', id],
-  staleTime: 5 * 60 * 1000, // 5 minutes
-  gcTime: 10 * 60 * 1000,   // 10 minutes
-});
-```
-
-**3. Virtual Scrolling:**
-```typescript
-<VirtualList
-  itemCount={traces.length}
-  itemSize={72}
-  height={600}
-/>
-```
-
-**4. Image Optimization:**
-- WebP format
-- Lazy loading
-- Responsive images
-
-### Target Metrics
-- First Contentful Paint: <1.5s
-- Largest Contentful Paint: <2.5s
-- Time to Interactive: <3.5s
-- Bundle Size: <500KB gzipped
-
----
-
-## 🎯 User Experience
-
-### Loading States
-
-```tsx
-{isLoading && <Skeleton />}
-{isStreaming && <ThinkingIndicator />}
-{error && <ErrorMessage retry={refetch} />}
-```
-
-### Error Handling
-
-```tsx
-<ErrorBoundary
-  fallback={<ErrorPage />}
-  onError={(error) => captureException(error)}
->
-  <App />
-</ErrorBoundary>
-```
-
-### Accessibility
-
-- ✅ ARIA labels on all interactive elements
-- ✅ Keyboard navigation (Tab, Enter, Esc)
-- ✅ Screen reader support
-- ✅ Focus management
-- ✅ Semantic HTML
-
----
-
-## 📚 Additional Documentation
-
-- [Component Storybook](./docs/storybook.md) - Component documentation
-- [API Integration Guide](./docs/api.md) - API usage examples
-- [Design Tokens](./docs/design-tokens.md) - Design system reference
-- [Contributing Guide](./CONTRIBUTING.md) - Development guidelines
-
----
-
-## 🔗 Tech Stack
-
-**Core:**
-- React 18 (Hooks, Suspense, Concurrent)
-- TypeScript 5
-- Vite 5
-
-**State Management:**
-- TanStack Query (Server state)
-- Zustand (Client state)
-- LocalStorage (Persistence)
-
-**Styling:**
-- Tailwind CSS 3
-- CSS Modules (component-specific)
-- Framer Motion (Animations)
-
-**API:**
-- Axios (HTTP)
-- EventSource (SSE)
-- Socket.io (Future WebSocket)
-
-**Testing:**
-- Vitest (Unit)
-- React Testing Library
-- Playwright (E2E)
-
-**Build:**
-- Vite (Dev + Build)
-- ESBuild (Transpilation)
-- Rollup (Bundling)
-
----
-
-## 🐛 Known Issues
-
-None currently! 🎉
-
----
-
-## 🚧 Roadmap
-
-### Q1 2026
-- [ ] Advanced analytics dashboard
-- [ ] Trace comparison view
-- [ ] Export functionality (JSON/CSV)
-- [ ] Dark/Light theme toggle
-
-### Q2 2026
-- [ ] Multi-agent support
-- [ ] Collaborative traces
-- [ ] Custom visualizations
-- [ ] Plugin system
-
----
-
-## 📄 License
-
-MIT License - See LICENSE file for details
-
----
+The application currently supports **Guest Authentication**. A unique Guest ID is generated and stored in `localStorage` to persist sessions across reloads.
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open Pull Request
-
----
-
-## 📞 Support
-
-- **Issues:** [GitHub Issues](https://github.com/Tamilarasan-ai/GlassBox-Frontend/issues)
-- **Docs:** See `docs/` directory
-- **Demo:** `http://localhost:5173` (when running)
-
----
-
-**Built for transparency, designed for developers** 🔍✨
+1.  Follow the feature-based directory structure.
+2.  Ensure all new components are responsive and support the dark theme.
+3.  Use the shared UI components from `@/components/ui` whenever possible.

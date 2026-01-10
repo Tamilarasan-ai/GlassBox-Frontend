@@ -1,123 +1,116 @@
 import React, { useState } from 'react';
+import { Bot, Activity, Box, User, Layers, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { Button, Card, CardHeader, CardTitle, CardContent, Modal } from '@/components/ui';
-import { ChatContainer } from '@/features/chat';
-import { TraceTable, TraceInspector } from '@/features/traces';
+import ChatContainer from './features/chat/components/ChatContainer';
+import { TraceTable } from '@/features/traces';
+import { ToastProvider } from '@/components/ui/Toast';
 
 const App = () => {
   const [activeTab, setActiveTab] = useState('chat');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200 shadow-sm">
-        <div className="container mx-auto px-4 py-4">
-          <h1 className="text-2xl font-bold text-gray-900">Innowhyte Frontend</h1>
-          <p className="text-sm text-gray-500">Production-ready feature-based architecture</p>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
-        {/* Tab Navigation */}
-        <div className="flex gap-2 mb-6">
-          <Button
-            variant={activeTab === 'chat' ? 'primary' : 'outline'}
-            onClick={() => setActiveTab('chat')}
-          >
-            Chat Feature
-          </Button>
-          <Button
-            variant={activeTab === 'traces' ? 'primary' : 'outline'}
-            onClick={() => setActiveTab('traces')}
-          >
-            Traces Feature
-          </Button>
-          <Button
-            variant={activeTab === 'ui' ? 'primary' : 'outline'}
-            onClick={() => setActiveTab('ui')}
-          >
-            UI Components
-          </Button>
-        </div>
-
-        {/* Content Area */}
-        {activeTab === 'chat' && (
-          <Card className="h-[600px]">
-            <ChatContainer />
-          </Card>
-        )}
-
-        {activeTab === 'traces' && (
-          <div className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Traces</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <TraceTable traces={[]} isLoading={false} />
-              </CardContent>
-            </Card>
+    <ToastProvider>
+      <div className="flex h-screen bg-bg text-text-primary font-sans selection:bg-primary/30 overflow-hidden">
+        {/* Left Sidebar */}
+        <aside
+          className={`${isSidebarOpen ? 'w-[260px] translate-x-0' : 'w-0 -translate-x-full opacity-0'
+            } bg-panel border-r border-border-soft flex flex-col flex-shrink-0 transition-all duration-300 ease-in-out overflow-hidden whitespace-nowrap`}
+        >
+          {/* Logo & Toggle */}
+          <div className="p-6 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-gradient-to-br from-primary-gradient_start to-primary-gradient_end rounded-lg flex items-center justify-center shadow-lg shadow-primary/20">
+                <Box className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-lg font-bold text-text-primary tracking-tight">GlassBox</span>
+            </div>
+            <button
+              onClick={toggleSidebar}
+              className="p-1.5 hover:bg-surface rounded-lg text-text-secondary hover:text-text-primary transition-colors"
+            >
+              <PanelLeftClose className="w-5 h-5" />
+            </button>
           </div>
-        )}
 
-        {activeTab === 'ui' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Buttons Demo */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Buttons</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex flex-wrap gap-2">
-                  <Button variant="default">Default</Button>
-                  <Button variant="primary">Primary</Button>
-                  <Button variant="secondary">Secondary</Button>
-                  <Button variant="outline">Outline</Button>
-                  <Button variant="ghost">Ghost</Button>
-                  <Button variant="destructive">Destructive</Button>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  <Button size="sm">Small</Button>
-                  <Button size="md">Medium</Button>
-                  <Button size="lg">Large</Button>
-                </div>
-                <Button isLoading>Loading...</Button>
-              </CardContent>
-            </Card>
+          {/* Navigation */}
+          <div className="flex-1 overflow-y-auto px-3 py-4 space-y-6">
+            {/* AGENTS Section */}
+            <div>
+              <div className="px-3 mb-2 text-xs font-semibold text-text-muted uppercase tracking-wider">
+                Agents
+              </div>
+              <button
+                onClick={() => setActiveTab('chat')}
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group ${activeTab === 'chat'
+                  ? 'bg-primary/10 text-primary border border-primary/20'
+                  : 'text-text-secondary hover:bg-surface hover:text-text-primary'
+                  }`}
+              >
+                <Bot className={`w-4 h-4 ${activeTab === 'chat' ? 'text-primary' : 'text-text-secondary group-hover:text-text-primary'}`} />
+                <span className="font-medium">Calculator Agent</span>
+              </button>
+            </div>
 
-            {/* Modal Demo */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Modal</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Button onClick={() => setIsModalOpen(true)}>Open Modal</Button>
-                <Modal
-                  isOpen={isModalOpen}
-                  onClose={() => setIsModalOpen(false)}
-                  title="Example Modal"
-                  description="This is a production-ready modal component"
-                >
-                  <p className="text-gray-700">
-                    This modal includes accessibility features like focus trap,
-                    ESC key handling, and body scroll lock.
-                  </p>
-                  <div className="mt-4 flex justify-end gap-2">
-                    <Button variant="outline" onClick={() => setIsModalOpen(false)}>
-                      Cancel
-                    </Button>
-                    <Button variant="primary" onClick={() => setIsModalOpen(false)}>
-                      Confirm
-                    </Button>
+            {/* MONITORING Section */}
+            <div>
+              <div className="px-3 mb-2 text-xs font-semibold text-text-muted uppercase tracking-wider">
+                Monitoring
+              </div>
+              <button
+                onClick={() => setActiveTab('traces')}
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group ${activeTab === 'traces'
+                  ? 'bg-primary/10 text-primary border border-primary/20'
+                  : 'text-text-secondary hover:bg-surface hover:text-text-primary'
+                  }`}
+              >
+                <Activity className={`w-4 h-4 ${activeTab === 'traces' ? 'text-primary' : 'text-text-secondary group-hover:text-text-primary'}`} />
+                <span className="font-medium">Traces</span>
+              </button>
+            </div>
+          </div>
+        </aside>
+
+        {/* Main Content Area */}
+        <main className="flex-1 flex flex-col min-w-0 bg-bg relative transition-all duration-300">
+          {activeTab === 'chat' && (
+            <ChatContainer
+              isSidebarOpen={isSidebarOpen}
+              toggleSidebar={toggleSidebar}
+            />
+          )}
+
+          {activeTab === 'traces' && (
+            <div className="flex-1 flex flex-col h-full overflow-hidden">
+              <header className="h-16 border-b border-border-soft flex items-center justify-between px-6 bg-bg/80 backdrop-blur-md z-10 flex-shrink-0">
+                <div className="flex items-center gap-4">
+                  {!isSidebarOpen && (
+                    <button
+                      onClick={toggleSidebar}
+                      className="p-2 hover:bg-surface rounded-lg text-text-secondary hover:text-text-primary transition-colors"
+                    >
+                      <PanelLeftOpen className="w-5 h-5" />
+                    </button>
+                  )}
+                  <div>
+                    <h2 className="text-lg font-semibold text-text-primary">Trace History</h2>
+                    <p className="text-xs text-text-secondary">Monitor and debug agent execution runs with full transparency.</p>
                   </div>
-                </Modal>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-      </main>
-    </div>
+                </div>
+              </header>
+              <div className="flex-1 overflow-auto p-6">
+                <TraceTable />
+              </div>
+            </div>
+          )}
+
+
+        </main>
+      </div>
+    </ToastProvider>
   );
 };
 
